@@ -71,6 +71,7 @@ if __name__ == '__main__':
     with open(app.args.file) as file:
         pass
 
+
     # if app.args.folder:
     #     os.walk()
     # mode(app.args.)
