@@ -5,8 +5,8 @@ from json import dump, load
 
 
 class File(ABC):
-    def __init__(self, filename):
-        self.filename = filename
+    def __init__(self, file_path):
+        self.file_path = file_path
 
     @abstractmethod
     def load(self):
@@ -19,31 +19,31 @@ class File(ABC):
 
 class TXTFile(File):
     def load(self):
-        with open(self.filename, 'r', encoding='utf-8') as file:
+        with open(self.file_path, 'r', encoding='utf-8') as file:
             return file.read()
 
     def save(self, data):
-        with open(self.filename, 'w', encoding='utf-8') as file:
+        with open(self.file_path, 'w', encoding='utf-8') as file:
             file.write(data)
 
 
 class CRFile(File):
     def load(self):
-        with open(self.filename, 'r', encoding='utf-8') as file:
+        with open(self.file_path, 'r', encoding='utf-8') as file:
             return file.read()
 
     def save(self, data):
-        with open(self.filename, 'w', encoding='utf-8') as file:
+        with open(self.file_path, 'w', encoding='utf-8') as file:
             file.write(data)
 
 
 class JSONFile(File):
     def load(self):
-        with open(self.filename, 'r', encoding='utf-8') as file:
+        with open(self.file_path, 'r', encoding='utf-8') as file:
             return file.read()
 
     def save(self, data):
-        with open(self.filename, 'w', encoding='utf-8') as file:
+        with open(self.file_path, 'w', encoding='utf-8') as file:
             file.write(data)
 
 
