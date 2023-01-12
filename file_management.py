@@ -49,7 +49,7 @@ class JSONFile(File):
 
 class FileFactory:
     @staticmethod
-    def get_file(filename):
-        _, file_extension = os.path.splitext(filename)
+    def get_file(file_path):
+        _, file_extension = os.path.splitext(file_path)
         class_name = getattr(sys.modules[__name__], file_extension[1:].upper() + 'File')
-        return class_name(filename)
+        return class_name(file_path)
