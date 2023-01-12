@@ -21,5 +21,5 @@ class Protection:
     def encrypt(self, data: str) -> str:
         return self.key.encrypt(bytes(data, 'utf-8')).decode('utf-8')
 
-    def decode(self, data: str) -> str:
+    def decrypt(self, data: str) -> str:
         return self.key.decrypt(bytes(data, 'utf-8')).decode('utf-8')
