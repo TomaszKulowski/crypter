@@ -1,4 +1,4 @@
-"""The tools for encrypt and decrypt data in the file, and append new data to the encrypted file."""
+"""The collection of the tools for encrypt and decrypt data in the file, and append new data to the encrypted file."""
 import os.path
 
 from file_management import FileFactory
@@ -9,15 +9,16 @@ class Crypter:
     """The collections of tools to operate on files.
 
     Methods:
-        encrypt(file_path: str): encrypt data in the passed file.
-        decrypt(file_path: str): decrypt data from the passed file.
+        encrypt(file_path: str): encrypt data in the passed file
+        decrypt(file_path: str): decrypt data from the passed file
         append(path_to_encrypted_file, path_to_unencrypted_file): append new data to encrypted file
     """
     def __init__(self, password: str, remove_parent_file: str = False):
-        """
+        """Construct all the necessary attributes for the crypter object
+
         Args:
-            password (str): password to encrypt or decrypt the data.
-            remove_parent_file (bool): remove the original file after operation.
+            password (str): password to encrypt or decrypt the data
+            remove_parent_file (bool): remove the original file after operation
         """
         self.password = password
         self.remove_parent_file = remove_parent_file
@@ -26,7 +27,7 @@ class Crypter:
         """Encrypt the data in the passed file.
 
         Args:
-            file_path (str): path to the file.
+            file_path (str): path to the file
         """
         file = FileFactory.get_file(file_path)
         data = file.load()
@@ -41,7 +42,7 @@ class Crypter:
         """Decrypt the data in the passed file.
 
         Args:
-            file_path (str): path to the file.
+            file_path (str): path to the file
         """
         file = FileFactory.get_file(file_path)
         data = file.load()
@@ -59,8 +60,8 @@ class Crypter:
         and encrypt the file again.
 
         Args:
-            path_to_encrypted_file (str): path to the encrypted file.
-            path_to_unencrypted_file (str): path with unencrypted data.
+            path_to_encrypted_file (str): path to the encrypted file
+            path_to_unencrypted_file (str): path with unencrypted data
         """
         protection = Protection(self.password)
 
