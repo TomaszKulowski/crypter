@@ -53,6 +53,3 @@ class FileFactory:
         _, file_extension = os.path.splitext(filename)
         class_name = getattr(sys.modules[__name__], file_extension[1:].upper() + 'File')
         return class_name(filename)
-
-
-file = FileFactory.get_file('dupa.cr')
