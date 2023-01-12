@@ -1,6 +1,8 @@
 """The collection of the tools for encrypt and decrypt data in the file, and append new data to the encrypted file."""
+import itertools
 import os.path
 
+from exceptions import FileNotFoundException
 from file_management import FileFactory
 from protection import Protection
 
@@ -29,6 +31,9 @@ class Crypter:
         Args:
             file_path (str): path to the file
         """
+        if not os.path.exists(file_path):
+            raise FileNotFoundException
+
         file = FileFactory.get_file(file_path)
         data = file.load()
         encrypted_data = Protection(self.password).encrypt(data)
@@ -44,6 +49,9 @@ class Crypter:
         Args:
             file_path (str): path to the file
         """
+        if not os.path.exists(file_path):
+            raise FileNotFoundException
+
         file = FileFactory.get_file(file_path)
         data = file.load()
         decrypted_data = Protection(self.password).decrypt(data)
@@ -63,6 +71,9 @@ class Crypter:
             path_to_encrypted_file (str): path to the encrypted file
             path_to_unencrypted_file (str): path with unencrypted data
         """
+        if all([os.path.exists(file) for file in (itertools.islice(vars().values(), 1, None))]):
+            raise FileNotFoundException
+
         protection = Protection(self.password)
 
         encrypted_file = FileFactory.get_file(path_to_encrypted_file)
