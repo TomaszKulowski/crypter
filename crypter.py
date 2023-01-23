@@ -1,8 +1,6 @@
 """The collection of the tools for encrypt and decrypt data in the file, and append new data to the encrypted file."""
-import itertools
 import os.path
 
-from exceptions import FileNotFoundException
 from file_management import FileFactory
 from protection import Protection
 
