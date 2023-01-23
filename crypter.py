@@ -38,7 +38,7 @@ class Crypter:
         if self.remove_parent_file:
             os.remove(file_path)
         #: change the extension to the encrypted file
-        file.filename += '.cr'
+        file.file_path += '.cr'
         file.save(encrypted_data)
 
     def decrypt(self, file_path: str):
