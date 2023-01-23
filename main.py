@@ -1,3 +1,4 @@
+"""Application to encrypt files"""
 import argparse
 import logging
 import os
@@ -8,14 +9,21 @@ FILE_TYPES = ['.txt', '.cr', '.json']
 
 
 class Main:
+    """Main class of the crypter application.
+
+    Methods:
+         load(): classmethod to init arguments and set verbose mode
+    """
     def __init__(self):
+        """Construct all the necessary attributes"""
         self.parser = argparse.ArgumentParser(
             prog='crypter.py',
-            description='Application to encrypt text',
+            description='Application to encrypt files',
         )
         self.args = None
 
     def _load_arguments(self):
+        """Init arguments"""
         self.parser.add_argument(
             '-m',
             '--mode',
@@ -61,6 +69,7 @@ class Main:
         self.args = self.parser.parse_args()
 
     def _set_verbose_mode(self):
+        """Set verbose mode"""
         log_levels = [logging.NOTSET, logging.DEBUG, logging.INFO]
         level = log_levels[min(self.args.verbose, len(log_levels) - 1)]
         logging.basicConfig(level=level)
@@ -68,6 +77,11 @@ class Main:
 
     @classmethod
     def load(cls):
+        """Classmethod to init arguments and set verbose mode
+
+        Returns:
+            (object): main object
+        """
         app = cls()
         app._load_arguments()
         app._set_verbose_mode()
