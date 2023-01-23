@@ -2,7 +2,9 @@ import argparse
 import logging
 import os
 
-from protection import Protection
+from crypter import Crypter
+
+FILE_TYPES = ['.txt', '.cr', '.json']
 
 
 class Main:
@@ -28,7 +30,7 @@ class Main:
             '--password',
             metavar='PASSWORD',
             required=True,
-            help='Password to encrypt or decrypt'
+            help='Password to encrypt or decrypt',
         )
         self.parser.add_argument(
             '-v',
@@ -40,11 +42,20 @@ class Main:
         file_group = self.parser.add_mutually_exclusive_group(required=True)
         file_group.add_argument(
             '--file',
-            help='The path to the name of the file with data to be processed'
+            help='The path to the name of the file with data to be processed',
         )
         file_group.add_argument(
             '--folder',
-            help='The path to the folder with files to be processed'
+            help='The path to the folder with files to be processed',
+        )
+        self.parser.add_argument(
+            '-e',
+            '--extension',
+            choices=FILE_TYPES,
+            default=FILE_TYPES,
+            nargs='+',
+            help="""The extensions of files to be processed.
+                 All supported extensions are processed by default""",
         )
 
         self.args = self.parser.parse_args()
@@ -66,12 +77,17 @@ class Main:
 
 if __name__ == '__main__':
     app = Main().load()
-    protection = Protection(app.args.password)
-    protection_mode = getattr(protection, app.args.mode)
-    with open(app.args.file) as file:
-        pass
+    crypter = Crypter(app.args.password)
+    crypter_mode = getattr(crypter, app.args.mode)
 
+    if app.args.folder:
+        for directory in os.walk(app.args.folder):
+            for file in directory[2]:
+                if os.path.splitext(file)[1] in app.args.extension:
+                    crypter_mode(f'{directory[0]}/{file}')
 
-    # if app.args.folder:
-    #     os.walk()
-    # mode(app.args.)
+    if app.args.file:
+        if os.path.isfile(app.args.file):
+            crypter_mode(app.args.file)
+        else:
+            print('File not exist')
