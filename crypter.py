@@ -14,7 +14,7 @@ class Crypter:
         append(path_to_encrypted_file, path_to_unencrypted_file): append new data to encrypted file
     """
     def __init__(self, password: str, remove_parent_file: str = False):
-        """Construct all the necessary attributes for the crypter object
+        """Construct all the necessary attributes for the crypter object.
 
         Args:
             password (str): password to encrypt or decrypt the data
