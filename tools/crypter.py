@@ -2,8 +2,8 @@
 and append new data to the encrypted file."""
 import os.path
 
-from file_management import File
-from protection import Protection
+from tools.file_management import File
+from tools.protection import Protection
 
 
 class Crypter:
