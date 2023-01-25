@@ -1,4 +1,5 @@
-"""The collection of the tools for encrypt and decrypt data in the file, and append new data to the encrypted file."""
+"""The collection of the tools for encrypt and decrypt data in the file,
+and append new data to the encrypted file."""
 import os.path
 
 from file_management import File
@@ -13,7 +14,7 @@ class Crypter:
         decrypt(file_path: str): decrypt data from the passed file
         append(path_to_encrypted_file, path_to_unencrypted_file): append new data to encrypted file
     """
-    def __init__(self, password: str, remove_parent_file: str = False):
+    def __init__(self, password: str, remove_parent_file: bool = False):
         """Construct all the necessary attributes for the crypter object.
 
         Args:
@@ -45,7 +46,7 @@ class Crypter:
         Args:
             file_path (str): path to the file
         """
-
+        print(file_path)
         file = File(file_path)
         data = file.load()
         decrypted_data = Protection(self.password).decrypt(data)
