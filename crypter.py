@@ -1,9 +1,8 @@
-"""The collection of the tools for encrypt and decrypt data in the file, and append new data to the encrypted file."""
-import itertools
+"""The collection of the tools for encrypt and decrypt data in the file,
+and append new data to the encrypted file."""
 import os.path
 
-from exceptions import FileNotFoundException
-from file_management import FileFactory
+from file_management import File
 from protection import Protection
 
 
@@ -15,8 +14,8 @@ class Crypter:
         decrypt(file_path: str): decrypt data from the passed file
         append(path_to_encrypted_file, path_to_unencrypted_file): append new data to encrypted file
     """
-    def __init__(self, password: str, remove_parent_file: str = False):
-        """Construct all the necessary attributes for the crypter object
+    def __init__(self, password: str, remove_parent_file: bool = False):
+        """Construct all the necessary attributes for the crypter object.
 
         Args:
             password (str): password to encrypt or decrypt the data
@@ -32,13 +31,13 @@ class Crypter:
             file_path (str): path to the file
         """
 
-        file = FileFactory.get_file(file_path)
+        file = File(file_path)
         data = file.load()
         encrypted_data = Protection(self.password).encrypt(data)
         if self.remove_parent_file:
             os.remove(file_path)
         #: change the extension to the encrypted file
-        file.filename += '.cr'
+        file.file_path += '.cr'
         file.save(encrypted_data)
 
     def decrypt(self, file_path: str):
@@ -47,8 +46,7 @@ class Crypter:
         Args:
             file_path (str): path to the file
         """
-
-        file = FileFactory.get_file(file_path)
+        file = File(file_path)
         data = file.load()
         decrypted_data = Protection(self.password).decrypt(data)
         if self.remove_parent_file:
@@ -69,10 +67,10 @@ class Crypter:
         """
         protection = Protection(self.password)
 
-        encrypted_file = FileFactory.get_file(path_to_encrypted_file)
+        encrypted_file = File(path_to_encrypted_file)
         encrypted_data = encrypted_file.load()
         decrypted_data = protection.decrypt(encrypted_data)
-        unencrypted_file = FileFactory.get_file(path_to_unencrypted_file)
+        unencrypted_file = File(path_to_unencrypted_file)
         unencrypted_data = unencrypted_file.load()
         result = decrypted_data + unencrypted_data
         encrypted_file.save(result)

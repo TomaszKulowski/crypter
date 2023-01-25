@@ -1,5 +1,5 @@
 """The collections of the exceptions"""
 
 
-class FileNotFoundException(Exception):
+class ArgumentException(Exception):
     """File not found exception"""

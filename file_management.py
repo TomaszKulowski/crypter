@@ -1,55 +1,23 @@
-import sys
-from abc import ABC, abstractmethod
-import os
-from json import dump, load
+"""The collections to operate on files."""
 
 
-class File(ABC):
-    def __init__(self, file_path):
+class File:
+    """Create object with path file.
+
+    Methods:
+        load(): return data from file
+        save(data: str): save passed data to file
+    """
+    def __init__(self, file_path: str):
+        """Construct all the necessary attributes for the file object"""
         self.file_path = file_path
 
-    @abstractmethod
-    def load(self):
-        pass
-
-    @abstractmethod
-    def save(self, data):
-        pass
-
-
-class TXTFile(File):
-    def load(self):
+    def load(self) -> str:
+        """Open and return data from the file."""
         with open(self.file_path, 'r', encoding='utf-8') as file:
             return file.read()
 
-    def save(self, data):
+    def save(self, data: str):
+        """Open and save passed data to the file."""
         with open(self.file_path, 'w', encoding='utf-8') as file:
             file.write(data)
-
-
-class CRFile(File):
-    def load(self):
-        with open(self.file_path, 'r', encoding='utf-8') as file:
-            return file.read()
-
-    def save(self, data):
-        with open(self.file_path, 'w', encoding='utf-8') as file:
-            file.write(data)
-
-
-class JSONFile(File):
-    def load(self):
-        with open(self.file_path, 'r', encoding='utf-8') as file:
-            return file.read()
-
-    def save(self, data):
-        with open(self.file_path, 'w', encoding='utf-8') as file:
-            file.write(data)
-
-
-class FileFactory:
-    @staticmethod
-    def get_file(file_path):
-        _, file_extension = os.path.splitext(file_path)
-        class_name = getattr(sys.modules[__name__], file_extension[1:].upper() + 'File')
-        return class_name(file_path)
