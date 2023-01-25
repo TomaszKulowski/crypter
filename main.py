@@ -1,11 +1,14 @@
-"""Application to encrypt files"""
+"""Encypting files application"""
 import argparse
 import logging
 import os
+import sys
 
 from crypter import Crypter
+from exceptions import ArgumentException
 
-FILE_TYPES = ['.txt', '.cr', '.json']
+# The .cr extension belongs to encrypted files
+FILE_TYPES = ['.txt', '.cr', '.json', '.csv']
 
 
 class Main:
@@ -18,7 +21,7 @@ class Main:
         """Construct all the necessary attributes"""
         self.parser = argparse.ArgumentParser(
             prog='crypter.py',
-            description='Application to encrypt files',
+            description='Encypting files application',
         )
         self.args = None
 
@@ -29,7 +32,9 @@ class Main:
             '--mode',
             choices=['encrypt', 'decrypt', 'append'],
             required=True,
-            help="""encrypt given file or files;
+            metavar='',
+            help="""Available modes: encrypt, decrypt, append;
+            encrypt given file or files;
             decrypt encrypted file or files;
             append -> decrypt file, append text and encrypt the file again""",
         )
@@ -60,7 +65,6 @@ class Main:
             '-e',
             '--extension',
             choices=FILE_TYPES,
-            default=FILE_TYPES,
             nargs='+',
             help="""The extensions of files to be processed.
                  All supported extensions are processed by default""",
@@ -68,8 +72,25 @@ class Main:
 
         self.args = self.parser.parse_args()
 
+    def _set_default_extensions(self):
+        """Set default the file extensions.
+        Not used "default" option in extension implementation,
+        because there are some dependence.
+        """
+        if not self.args.extension and self.args.mode == 'decrypt':
+            self.args.extension = ['.cr']
+        else:
+            self.args.extension = FILE_TYPES
+
+    def _validate_arguments(self):
+        """Validate the passed arguments."""
+        if self.args.file and self.args.extension:
+            raise ArgumentException('argument --file not allowed with argument --extension')
+        if self.args.mode == 'decrypt' and None is not self.args.extension != ['.cr']:
+            raise ArgumentException('argument --mode decrypt not allowed with argument --extension')
+
     def _set_verbose_mode(self):
-        """Set verbose mode"""
+        """Set verbose mode."""
         log_levels = [logging.NOTSET, logging.DEBUG, logging.INFO]
         level = log_levels[min(self.args.verbose, len(log_levels) - 1)]
         logging.basicConfig(level=level)
@@ -77,31 +98,37 @@ class Main:
 
     @classmethod
     def load(cls):
-        """Classmethod to init arguments and set verbose mode
+        """Classmethod to init arguments and set verbose mode.
 
         Returns:
             (object): main object
         """
         app = cls()
         app._load_arguments()
+        app._validate_arguments()
         app._set_verbose_mode()
+        app._set_default_extensions()
 
         return app
 
 
 if __name__ == '__main__':
-    app = Main().load()
-    crypter = Crypter(app.args.password)
-    crypter_mode = getattr(crypter, app.args.mode)
+    try:
+        application = Main().load()
+    except ArgumentException as error:
+        print(error)
+        sys.exit()
+    crypter = Crypter(application.args.password)
+    crypter_mode = getattr(crypter, application.args.mode)
 
-    if app.args.folder:
-        for directory in os.walk(app.args.folder):
+    if application.args.folder:
+        for directory in os.walk(application.args.folder):
             for file in directory[2]:
-                if os.path.splitext(file)[1] in app.args.extension:
+                if os.path.splitext(file)[1].lower() in application.args.extension:
                     crypter_mode(f'{directory[0]}/{file}')
 
-    if app.args.file:
-        if os.path.isfile(app.args.file):
-            crypter_mode(app.args.file)
+    if application.args.file:
+        if os.path.isfile(application.args.file):
+            crypter_mode(application.args.file)
         else:
             print('File not exist')
