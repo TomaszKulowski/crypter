@@ -86,6 +86,7 @@ class Main:
         """Validate the passed arguments."""
         if self.args.file and self.args.extension:
             raise ArgumentException('argument --file not allowed with argument --extension')
+
         if self.args.mode == 'decrypt' and None is not self.args.extension != ['.cr']:
             raise ArgumentException('argument --mode decrypt not allowed with argument --extension')
 
