@@ -46,7 +46,6 @@ class Crypter:
         Args:
             file_path (str): path to the file
         """
-        print(file_path)
         file = File(file_path)
         data = file.load()
         decrypted_data = Protection(self.password).decrypt(data)
