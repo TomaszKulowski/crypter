@@ -83,7 +83,7 @@ class Main:
             self.args.extension = FILE_TYPES
 
     def _validate_arguments(self):
-        """Validate the passed arguments."""
+        """Validate passed arguments."""
         if self.args.file and self.args.extension:
             raise ArgumentException('argument --file not allowed with argument --extension')
 
