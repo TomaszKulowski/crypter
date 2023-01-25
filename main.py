@@ -4,8 +4,8 @@ import logging
 import os
 import sys
 
-from crypter import Crypter
-from exceptions import ArgumentException
+from tools.crypter import Crypter
+from tools.exceptions import ArgumentException
 
 # The .cr extension belongs to encrypted files
 FILE_TYPES = ['.txt', '.cr', '.json', '.csv']
