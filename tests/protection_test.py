@@ -1,4 +1,4 @@
-"""The collections of the test for protection module"""
+"""The collections of the tests for protection module."""
 from cryptography.fernet import Fernet
 
 from tools.protection import Protection
