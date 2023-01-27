@@ -5,10 +5,10 @@ from tools.protection import Protection
 
 
 def test_encrypt_data(mocker):
-    """Check the data is encrypted correctly.
+    """Check that the data has been encrypted correctly.
 
     Args:
-        mocker (pytest_mock): mock called methods
+        mocker (pytest_mock): mock the called methods
     """
     excepted_result = 'gAAAAABj0YLPHaoW=='
     mocker.patch.object(Fernet, 'encrypt', return_value=bytes(excepted_result, 'utf-8'))
@@ -21,10 +21,10 @@ def test_encrypt_data(mocker):
 
 
 def test_decrypt_data(mocker):
-    """Check the encrypted data is decrypted correctly.
+    """Check that the encrypted data has been decrypted correctly.
 
     Args:
-        mocker (pytest_mock): mock called methods
+        mocker (pytest_mock): mock the called methods
     """
     excepted_result = 'decrypted data '
     mocker.patch.object(Fernet, 'decrypt', return_value=bytes(excepted_result, 'utf-8'))
