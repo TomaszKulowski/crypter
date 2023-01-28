@@ -2,8 +2,8 @@
 and append new data to the encrypted file."""
 import os.path
 
-from file_management import File
-from protection import Protection
+from tools.file_management import File
+from tools.protection import Protection
 
 
 class Crypter:
@@ -23,6 +23,7 @@ class Crypter:
         """
         self.password = password
         self.remove_parent_file = remove_parent_file
+        self.file_path = None
 
     def encrypt(self, file_path: str):
         """Encrypt the data in the passed file.
@@ -30,14 +31,15 @@ class Crypter:
         Args:
             file_path (str): path to the file
         """
-
-        file = File(file_path)
+        self.file_path = file_path
+        file = File(self.file_path)
         data = file.load()
         encrypted_data = Protection(self.password).encrypt(data)
         if self.remove_parent_file:
-            os.remove(file_path)
+            os.remove(self.file_path)
         #: change the extension to the encrypted file
-        file.file_path += '.cr'
+        self.file_path += '.cr'
+        file.file_path += self.file_path
         file.save(encrypted_data)
 
     def decrypt(self, file_path: str):
@@ -46,14 +48,16 @@ class Crypter:
         Args:
             file_path (str): path to the file
         """
+        self.file_path = file_path
         file = File(file_path)
         data = file.load()
         decrypted_data = Protection(self.password).decrypt(data)
         if self.remove_parent_file:
-            os.remove(file_path)
+            os.remove(self.file_path)
         _, file_extension = os.path.splitext(file_path)
         #: remove .cr extension
-        file.file_path = file.file_path[:-len(file_extension)]
+        self.file_path = file.file_path[:-len(file_extension)]
+        file.file_path = self.file_path
         file.save(decrypted_data)
 
     def append(self, path_to_encrypted_file: str, path_to_unencrypted_file: str):
@@ -72,5 +76,7 @@ class Crypter:
         decrypted_data = protection.decrypt(encrypted_data)
         unencrypted_file = File(path_to_unencrypted_file)
         unencrypted_data = unencrypted_file.load()
-        result = decrypted_data + unencrypted_data
-        encrypted_file.save(result)
+        encrypted_result = protection.encrypt(decrypted_data + unencrypted_data)
+        if self.remove_parent_file:
+            os.remove(path_to_unencrypted_file)
+        encrypted_file.save(encrypted_result)

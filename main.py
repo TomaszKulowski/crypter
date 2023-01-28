@@ -4,8 +4,8 @@ import logging
 import os
 import sys
 
-from crypter import Crypter
-from exceptions import ArgumentException
+from tools.crypter import Crypter
+from tools.exceptions import ArgumentException
 
 # The .cr extension belongs to encrypted files
 FILE_TYPES = ['.txt', '.cr', '.json', '.csv']
@@ -15,7 +15,7 @@ class Main:
     """Main class of the crypter application.
 
     Methods:
-         load(): classmethod to init arguments and set verbose mode
+         start(): classmethod to load all the necessary methods and start the application
     """
     def __init__(self):
         """Construct all the necessary attributes"""
@@ -69,6 +69,13 @@ class Main:
             help="""The extensions of files to be processed.
                  All supported extensions are processed by default""",
         )
+        self.parser.add_argument(
+            '-r',
+            '--remove',
+            choices=[True, False],
+            default=False,
+            help='Remove parent file. Default is False'
+        )
 
         self.args = self.parser.parse_args()
 
@@ -83,7 +90,7 @@ class Main:
             self.args.extension = FILE_TYPES
 
     def _validate_arguments(self):
-        """Validate the passed arguments."""
+        """Validate passed arguments."""
         if self.args.file and self.args.extension:
             raise ArgumentException('argument --file not allowed with argument --extension')
 
@@ -97,39 +104,40 @@ class Main:
         logging.basicConfig(level=level)
         print(level)
 
-    @classmethod
-    def load(cls):
-        """Classmethod to init arguments and set verbose mode.
+    def _start(self):
+        """The method with application logic."""
+        crypter = Crypter(
+            self.args.password,
+            self.args.remove,
+        )
+        crypter_mode = getattr(crypter, self.args.mode)
 
-        Returns:
-            (object): main object
-        """
+        if self.args.folder:
+            for directory in os.walk(self.args.folder):
+                for file in directory[2]:
+                    if os.path.splitext(file)[1].lower() in self.args.extension:
+                        crypter_mode(f'{directory[0]}/{file}')
+
+        if self.args.file:
+            if os.path.isfile(self.args.file):
+                crypter_mode(self.args.file)
+            else:
+                print('File not exist')
+
+    @classmethod
+    def start(cls):
+        """Classmethod to init arguments and set verbose mode."""
         app = cls()
         app._load_arguments()
         app._validate_arguments()
         app._set_verbose_mode()
         app._set_default_extensions()
-
-        return app
+        app._start()
 
 
 if __name__ == '__main__':
     try:
-        application = Main().load()
+        Main().start()
     except ArgumentException as error:
         print(error)
         sys.exit()
-    crypter = Crypter(application.args.password)
-    crypter_mode = getattr(crypter, application.args.mode)
-
-    if application.args.folder:
-        for directory in os.walk(application.args.folder):
-            for file in directory[2]:
-                if os.path.splitext(file)[1].lower() in application.args.extension:
-                    crypter_mode(f'{directory[0]}/{file}')
-
-    if application.args.file:
-        if os.path.isfile(application.args.file):
-            crypter_mode(application.args.file)
-        else:
-            print('File not exist')
