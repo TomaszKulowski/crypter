@@ -69,6 +69,13 @@ class Main:
             help="""The extensions of files to be processed.
                  All supported extensions are processed by default""",
         )
+        self.parser.add_argument(
+            '-r',
+            '--remove',
+            choices=[True, False],
+            default=False,
+            help='Remove parent file. Default is False'
+        )
 
         self.args = self.parser.parse_args()
 
@@ -119,7 +126,10 @@ if __name__ == '__main__':
     except ArgumentException as error:
         print(error)
         sys.exit()
-    crypter = Crypter(application.args.password)
+    crypter = Crypter(
+        application.args.password,
+        application.args.remove,
+    )
     crypter_mode = getattr(crypter, application.args.mode)
 
     if application.args.folder:
