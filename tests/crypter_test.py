@@ -1,3 +1,4 @@
+"""The collections of the tests for the crypter.py module"""
 import builtins
 import os
 
@@ -7,15 +8,23 @@ from tools.protection import Protection
 
 
 class SideEffect:
-    def __init__(self, *functions):
+    """Implemented to call to the different function in any call when use side_effect attribute"""
+    def __init__(self, *functions: callable):
+        """Construct all the necessary attributes for the sideeffect object
+
+        Args:
+            *functions (callable): functions that are returned after any call
+        """
         self.functions = iter(functions)
 
     def __call__(self, *args, **kwargs):
+        """After any call return next function"""
         function = next(self.functions)
         return function(*args, **kwargs)
 
 
 def test_encrypt_file(mocker):
+    """Check that the data from the unencrypted file is encrypted and saved correctly"""
     example_file_path = 'example_folder/file.txt'
     fake_encrypted_data = 'gAABj0YLPHaoW=='
     example_read_data = ' data1@./? '
@@ -34,6 +43,7 @@ def test_encrypt_file(mocker):
 
 
 def test_file_extension_after_encrypt(mocker):
+    """Check that the extension file is changed to '.cr' after encrypt"""
     example_file_path = 'example_folder/file.txt'
     crypter = Crypter('password')
 
@@ -46,6 +56,7 @@ def test_file_extension_after_encrypt(mocker):
 
 
 def test_file_extension_after_decrypt(mocker):
+    """Check that the '.cr' extension is removed after decrypt"""
     example_file_path = 'example_folder/file.txt.cr'
     crypter = Crypter('password')
 
@@ -58,6 +69,8 @@ def test_file_extension_after_decrypt(mocker):
 
 
 def test_append_new_data_to_encrypted_file(mocker):
+    """Check that the data from the encrypted file is decrypted,
+    append new data, encrypt again and save to the encrypted file"""
     example_encrypted_file = 'encrypted.txt.cr'
     example_unencrypted_file = 'unencrypted.txt'
     crypter = Crypter('pAss12@;!')
@@ -81,6 +94,8 @@ def test_append_new_data_to_encrypted_file(mocker):
 
 
 def test_parent_file_has_been_removed_after_encrypt(mocker):
+    """Check that the parent file is removed after encrypting
+    when the remove option is chosen"""
     example_file_path = 'example_folder/file.txt'
     crypter = Crypter('password', remove_parent_file=True)
 
@@ -94,6 +109,8 @@ def test_parent_file_has_been_removed_after_encrypt(mocker):
 
 
 def test_parent_file_has_been_removed_after_decrypt(mocker):
+    """Check that the parent file is removed after decrypting
+    when the remove option is chosen"""
     example_file_path = 'example_folder/file.txt'
     crypter = Crypter('password', remove_parent_file=True)
 
@@ -107,6 +124,8 @@ def test_parent_file_has_been_removed_after_decrypt(mocker):
 
 
 def test_parent_file_has_been_removed_after_append(mocker):
+    """Check that the unencrypted file is removed after append new data
+    when the remove option is chosen"""
     example_encrypted_file = 'encrypted.txt.cr'
     example_unencrypted_file = 'unencrypted.txt'
     crypter = Crypter('password', remove_parent_file=True)
@@ -123,6 +142,8 @@ def test_parent_file_has_been_removed_after_append(mocker):
 
 
 def test_parent_file_has_not_been_removed_after_encrypt(mocker):
+    """Check that the parent file isn't removed after encrypting
+    when the remove option is chosen as False"""
     example_file_path = 'example_folder/file.txt'
     crypter = Crypter('password', remove_parent_file=False)
 
@@ -136,6 +157,8 @@ def test_parent_file_has_not_been_removed_after_encrypt(mocker):
 
 
 def test_parent_file_has_not_been_removed_after_decrypt(mocker):
+    """Check that the parent file isn't removed after decrypting
+    when the remove option is chosen as False"""
     example_file_path = 'example_folder/file.txt'
     crypter = Crypter('password', remove_parent_file=False)
 
@@ -149,6 +172,8 @@ def test_parent_file_has_not_been_removed_after_decrypt(mocker):
 
 
 def test_parent_file_has_not_been_removed_after_append(mocker):
+    """Check that the unencrypted file isn't removed after append new data
+    when the remove option is chosen as False"""
     example_encrypted_file = 'encrypted.txt.cr'
     example_unencrypted_file = 'unencrypted.txt'
     crypter = Crypter('password', remove_parent_file=False)
