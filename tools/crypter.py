@@ -76,5 +76,7 @@ class Crypter:
         decrypted_data = protection.decrypt(encrypted_data)
         unencrypted_file = File(path_to_unencrypted_file)
         unencrypted_data = unencrypted_file.load()
-        result = decrypted_data + unencrypted_data
-        encrypted_file.save(result)
+        encrypted_result = protection.encrypt(decrypted_data + unencrypted_data)
+        if self.remove_parent_file:
+            os.remove(path_to_unencrypted_file)
+        encrypted_file.save(encrypted_result)
