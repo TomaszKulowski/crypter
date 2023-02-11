@@ -35,7 +35,7 @@ class Crypter:
         data = file.load()
         encrypted_data = Protection(self.password).encrypt(data)
         if self.remove_parent_file:
-            os.remove(self.file_path)
+            os.remove(file_path)
         #: change the extension to the encrypted file
         file.file_path(file_path + '.cr')
         file.save(encrypted_data)
@@ -51,7 +51,7 @@ class Crypter:
         data = file.load()
         decrypted_data = Protection(self.password).decrypt(data)
         if self.remove_parent_file:
-            os.remove(self.file_path)
+            os.remove(file_path)
         _, file_extension = os.path.splitext(file_path)
         #: remove .cr extension
         file_path = file.file_path[:-len(file_extension)]
