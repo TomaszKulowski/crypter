@@ -54,8 +54,7 @@ class Crypter:
             os.remove(file_path)
         _, file_extension = os.path.splitext(file_path)
         #: remove .cr extension
-        file_path = file.file_path[:-len(file_extension)]
-        file.file_path = file_path
+        file.file_path = file.file_path[:-len(file_extension)]
         file.save(decrypted_data)
 
     def append(self, path_to_encrypted_file: str, path_to_unencrypted_file: str):
