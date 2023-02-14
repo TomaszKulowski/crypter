@@ -15,6 +15,7 @@ def test_encrypt_file(mocker):
     crypter = Crypter('password')
 
     mocker.patch.object(Protection, 'encrypt', return_value=fake_encrypted_data)
+    mocker.patch.object(File, 'file_path')
     mocker.patch.object(File, 'load', return_value=example_read_data)
     mocker.patch.object(File, 'save')
 
@@ -32,6 +33,7 @@ def test_file_extension_after_encrypt(mocker):
 
     mocker.patch.object(builtins, 'open', new=mocker.mock_open())
     mocker.patch.object(Protection, 'encrypt')
+    mocker.patch.object(File, 'file_path')
     mocker.patch.object(File, 'load')
 
     crypter.encrypt(example_file_path)
@@ -52,6 +54,7 @@ def test_file_extension_after_decrypt(mocker):
 
     mocker.patch.object(builtins, 'open', new=mocker.mock_open())
     mocker.patch.object(Protection, 'decrypt')
+    mocker.patch.object(File, 'file_path')
     mocker.patch.object(File, 'load')
 
     crypter.decrypt(example_file_path)
@@ -74,6 +77,7 @@ def test_append_new_data_to_encrypted_file(mocker):
 
     mocker.patch.object(Protection, 'encrypt', return_value='abced==')
     mocker.patch.object(Protection, 'decrypt', return_value='decrypted data')
+    mocker.patch.object(File, 'file_path')
     mocker.patch.object(File, 'load', side_effect=(
         'some text',
         'gAABPHaoW==',
@@ -95,6 +99,7 @@ def test_parent_file_has_been_removed_after_encrypt(mocker):
     crypter = Crypter('password', remove_parent_file=True)
 
     mocker.patch.object(Protection, 'encrypt')
+    mocker.patch.object(File, 'file_path')
     mocker.patch.object(File, 'load')
     mocker.patch.object(File, 'save')
     mocker.patch.object(os, 'remove')
@@ -114,6 +119,7 @@ def test_parent_file_has_been_removed_after_decrypt(mocker):
     crypter = Crypter('password', remove_parent_file=True)
 
     mocker.patch.object(Protection, 'decrypt')
+    mocker.patch.object(File, 'file_path')
     mocker.patch.object(File, 'load')
     mocker.patch.object(File, 'save')
     mocker.patch.object(os, 'remove')
@@ -135,6 +141,7 @@ def test_parent_file_has_been_removed_after_append(mocker):
 
     mocker.patch.object(Protection, 'decrypt')
     mocker.patch.object(Protection, 'encrypt')
+    mocker.patch.object(File, 'file_path')
     mocker.patch.object(File, 'load', return_data='some text')
     mocker.patch.object(File, 'save')
     mocker.patch.object(os, 'remove')
@@ -155,6 +162,7 @@ def test_parent_file_has_not_been_removed_after_encrypt(mocker):
     crypter = Crypter('password', remove_parent_file=False)
 
     mocker.patch.object(Protection, 'encrypt')
+    mocker.patch.object(File, 'file_path')
     mocker.patch.object(File, 'load')
     mocker.patch.object(File, 'save')
     mocker.patch.object(os, 'remove')
@@ -174,6 +182,7 @@ def test_parent_file_has_not_been_removed_after_decrypt(mocker):
     crypter = Crypter('password', remove_parent_file=False)
 
     mocker.patch.object(Protection, 'decrypt')
+    mocker.patch.object(File, 'file_path')
     mocker.patch.object(File, 'load')
     mocker.patch.object(File, 'save')
     mocker.patch.object(os, 'remove')
@@ -195,6 +204,7 @@ def test_parent_file_has_not_been_removed_after_append(mocker):
 
     mocker.patch.object(Protection, 'encrypt')
     mocker.patch.object(Protection, 'decrypt')
+    mocker.patch.object(File, 'file_path')
     mocker.patch.object(File, 'load', return_data='some text')
     mocker.patch.object(File, 'save')
     mocker.patch.object(os, 'remove')
