@@ -80,7 +80,7 @@ class Main:
         self.args = self.parser.parse_args()
 
     def _set_default_extensions(self):
-        """Set default the file extensions.
+        """Set the default file extensions.
         Not used "default" option in extension implementation,
         because there are some dependence.
         """
