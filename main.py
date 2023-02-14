@@ -119,10 +119,8 @@ class Main:
                         crypter_mode(f'{directory[0]}/{file}')
 
         if self.args.file:
-            if os.path.isfile(self.args.file):
+            if os.path.splitext(self.args.file)[1].lower() in self.args.extension:
                 crypter_mode(self.args.file)
-            else:
-                print('File not exist')
 
     @classmethod
     def start(cls):
@@ -138,6 +136,11 @@ class Main:
 if __name__ == '__main__':
     try:
         Main().start()
+
     except ArgumentException as error:
+        print(error)
+        sys.exit()
+
+    except FileNotFoundError as error:
         print(error)
         sys.exit()
