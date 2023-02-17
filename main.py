@@ -1,11 +1,10 @@
 """Encypting files application"""
-import argparse
+from argparse import ArgumentParser, ArgumentError
 import logging
 import os
 import sys
 
 from tools.crypter import Crypter
-from tools.exceptions import ArgumentException
 
 # The .cr extension belongs to encrypted files
 FILE_TYPES = ['.txt', '.cr', '.json', '.csv']
@@ -19,13 +18,13 @@ class Main:
     """
     def __init__(self):
         """Construct all the necessary attributes"""
-        self.parser = argparse.ArgumentParser(
+        self.parser = ArgumentParser(
             prog='crypter.py',
             description='Encypting files application',
         )
         self.args = None
 
-    def _load_arguments(self):
+    def _load_arguments(self, args):
         """Init arguments"""
         self.parser.add_argument(
             '-m',
@@ -76,8 +75,7 @@ class Main:
             default=False,
             help='Remove parent file. Default is False'
         )
-
-        self.args = self.parser.parse_args()
+        self.args = self.parser.parse_args(args)
 
     def _set_default_extensions(self):
         """Set the default file extensions.
@@ -92,10 +90,10 @@ class Main:
     def _validate_arguments(self):
         """Validate passed arguments."""
         if self.args.file and self.args.extension:
-            raise ArgumentException('argument --file not allowed with argument --extension')
+            raise ArgumentError('argument --file not allowed with argument --extension')
 
         if self.args.mode == 'decrypt' and None is not self.args.extension != ['.cr']:
-            raise ArgumentException('argument --mode decrypt not allowed with argument --extension')
+            raise ArgumentError('argument --mode decrypt not allowed with argument --extension')
 
     def _set_verbose_mode(self):
         """Set verbose mode."""
@@ -126,7 +124,7 @@ class Main:
     def start(cls):
         """Classmethod to init arguments and set verbose mode."""
         app = cls()
-        app._load_arguments()
+        app._load_arguments(sys.argv[1:])
         app._validate_arguments()
         app._set_verbose_mode()
         app._set_default_extensions()
@@ -137,10 +135,9 @@ if __name__ == '__main__':
     try:
         Main().start()
 
-    except ArgumentException as error:
-        print(error)
-        sys.exit()
+    except ArgumentError as error:
+        print(f'error: {error.message}')
 
     except FileNotFoundError as error:
-        print(error)
+        print(f'error: {error}')
         sys.exit()
