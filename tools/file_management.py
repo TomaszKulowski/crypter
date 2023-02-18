@@ -46,7 +46,7 @@ class File:
             while file.tell() != file_size:
                 data = self._strip_last_new_line_character(file.readline())
                 result += data
-                progress_bar.set(file.tell())
+                progress_bar.progress = file.tell()
             return result.decode('utf-8')
 
     def save(self, data: str):
@@ -54,5 +54,5 @@ class File:
         progress_bar = ProgressBar('save', len(data))
         with open(self.file_path, 'w', encoding='utf-8') as file:
             for index, byte in enumerate(data, 1):
-                progress_bar.set(index)
+                progress_bar.progress = index
                 file.write(byte)
