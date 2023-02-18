@@ -1,14 +1,15 @@
 """Encypting files application"""
-import argparse
+from argparse import ArgumentParser, ArgumentError
 import logging
 import os
 import sys
 
 from tools.crypter import Crypter
-from tools.exceptions import ArgumentException
 
 # The .cr extension belongs to encrypted files
-FILE_TYPES = ['.txt', '.cr', '.json', '.csv']
+ENCRYPTED_EXTENSION = ['.cr']
+UNENCRYPTED_EXTENSIONS = ['.csv', '.json', '.txt']
+FILE_TYPES = UNENCRYPTED_EXTENSIONS + ENCRYPTED_EXTENSION
 
 
 class Main:
@@ -19,13 +20,13 @@ class Main:
     """
     def __init__(self):
         """Construct all the necessary attributes"""
-        self.parser = argparse.ArgumentParser(
+        self.parser = ArgumentParser(
             prog='crypter.py',
             description='Encypting files application',
         )
         self.args = None
 
-    def _load_arguments(self):
+    def _load_arguments(self, args):
         """Init arguments"""
         self.parser.add_argument(
             '-m',
@@ -55,6 +56,7 @@ class Main:
         file_group = self.parser.add_mutually_exclusive_group(required=True)
         file_group.add_argument(
             '--file',
+            nargs='+',
             help='The path to the name of the file with data to be processed',
         )
         file_group.add_argument(
@@ -76,11 +78,10 @@ class Main:
             default=False,
             help='Remove parent file. Default is False'
         )
-
-        self.args = self.parser.parse_args()
+        self.args = self.parser.parse_args(args)
 
     def _set_default_extensions(self):
-        """Set default the file extensions.
+        """Set the default file extensions.
         Not used "default" option in extension implementation,
         because there are some dependence.
         """
@@ -92,17 +93,33 @@ class Main:
     def _validate_arguments(self):
         """Validate passed arguments."""
         if self.args.file and self.args.extension:
-            raise ArgumentException('argument --file not allowed with argument --extension')
+            raise ArgumentError(None, 'argument --file not allowed with argument --extension')
 
         if self.args.mode == 'decrypt' and None is not self.args.extension != ['.cr']:
-            raise ArgumentException('argument --mode decrypt not allowed with argument --extension')
+            raise ArgumentError(None, 'argument --mode decrypt not allowed with argument --extension')
+
+        if self.args.mode == 'append':
+            if len(self.args.file) != 2:
+                raise ArgumentError(None, 'append mode requires passing two files')
+            extensions = {os.path.splitext(file)[1].lower() for file in self.args.file}
+            if all(
+                    [
+                        extensions.issubset(set(ENCRYPTED_EXTENSION)),
+                        extensions.issubset(set(UNENCRYPTED_EXTENSIONS)),
+                    ]
+            ):
+                raise ArgumentError(None, 'append mode requires passing two files, encrypted and unencrypted')
+
+        if self.args.file:
+            for file in self.args.file:
+                if os.path.splitext(file)[1].lower() not in FILE_TYPES:
+                    raise ArgumentError(None, 'unsupported file type')
 
     def _set_verbose_mode(self):
         """Set verbose mode."""
         log_levels = [logging.NOTSET, logging.DEBUG, logging.INFO]
         level = log_levels[min(self.args.verbose, len(log_levels) - 1)]
         logging.basicConfig(level=level)
-        print(level)
 
     def _start(self):
         """The method with application logic."""
@@ -118,17 +135,18 @@ class Main:
                     if os.path.splitext(file)[1].lower() in self.args.extension:
                         crypter_mode(f'{directory[0]}/{file}')
 
-        if self.args.file:
-            if os.path.isfile(self.args.file):
-                crypter_mode(self.args.file)
-            else:
-                print('File not exist')
+        if self.args.file and self.args.mode != 'append':
+            for file in self.args.file:
+                crypter_mode(file)
+
+        else:
+            crypter_mode(self.args.file)
 
     @classmethod
     def start(cls):
         """Classmethod to init arguments and set verbose mode."""
         app = cls()
-        app._load_arguments()
+        app._load_arguments(sys.argv[1:])
         app._validate_arguments()
         app._set_verbose_mode()
         app._set_default_extensions()
@@ -138,6 +156,13 @@ class Main:
 if __name__ == '__main__':
     try:
         Main().start()
-    except ArgumentException as error:
-        print(error)
+
+    except ArgumentError as error:
+        print(f'error: {error.message}')
+
+    except FileNotFoundError as error:
+        print(f'error: {error}')
         sys.exit()
+
+    except ValueError as error:
+        print(f'error: {error}')
