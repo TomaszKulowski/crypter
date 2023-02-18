@@ -1,5 +1,7 @@
 # General info
-Crypter.py is encrypting files application. 
+Crypter.py is encrypting files application.
+
+Supported files extensions: ```.cr``` ```.csv``` ```.json``` ```.txt```
 
 ## Technologies 
 Python 3.10
