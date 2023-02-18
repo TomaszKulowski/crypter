@@ -4,7 +4,7 @@ import logging
 import os
 import sys
 
-from tools.crypter import Crypter
+from tools.crypter_tool import Crypter
 
 # The .cr extension belongs to encrypted files
 ENCRYPTED_EXTENSION = ['.cr']

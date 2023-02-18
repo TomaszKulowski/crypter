@@ -6,7 +6,6 @@ import pytest
 from tqdm import tqdm
 
 from tools.file_management import File
-from tools.progress_bar import ProgressBar
 
 
 def test_file_path_setter():
