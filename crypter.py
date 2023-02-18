@@ -1,4 +1,4 @@
-"""Encypting files application"""
+"""Encrypting files application"""
 from argparse import ArgumentParser, ArgumentError
 import logging
 import os
