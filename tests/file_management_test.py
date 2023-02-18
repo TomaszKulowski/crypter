@@ -3,6 +3,7 @@ import builtins
 from os import path
 
 import pytest
+from tqdm import tqdm
 
 from tools.file_management import File
 from tools.progress_bar import ProgressBar
@@ -46,14 +47,14 @@ def test_successfully_load_data_from_file(mocker):
     builtins.open.return_value.readline.return_value = b' example expected result '
     mocker.patch.object(path, 'getsize', return_value=2)
     mocker.patch.object(path, 'isfile', return_value=True)
-    mocker.patch.object(ProgressBar, '__new__')
+    mocker.patch.object(tqdm, '__new__')
 
     file_object = File()
     file_object.file_path = 'file.txt'
     result = file_object.load()
 
     builtins.open.assert_called_once_with('file.txt', 'rb')
-    ProgressBar.__new__.assert_called_once_with(ProgressBar, 'load', 2)
+    tqdm.__new__.assert_called_once_with(tqdm, total=2)
     assert result == expected_result
 
 
@@ -66,14 +67,14 @@ def test_save_data_to_file(mocker):
     data = 'example data to save '
     mocker.patch.object(builtins, 'open', new=mocker.mock_open())
     mocker.patch.object(path, 'isfile', return_value=True)
-    mocker.patch.object(ProgressBar, '__new__')
+    mocker.patch.object(tqdm, '__new__')
 
     file_object = File()
     file_object.file_path = 'file.txt'
     file_object.save(data)
 
     builtins.open.assert_called_once_with('file.txt', 'w', encoding='utf-8')
-    ProgressBar.__new__.assert_called_once_with(ProgressBar, 'save', len(data))
+    tqdm.__new__.assert_called_once_with(tqdm, total=len(data))
     assert builtins.open.return_value.__enter__.return_value.write.call_count == len(data)
 
 
