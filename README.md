@@ -21,13 +21,13 @@ Python 3.10
 3. Usage
 
   ```bash
-      usage: crypter.py [-h] -m  -p PASSWORD [-v] (--file FILE [FILE ...] | --folder FOLDER) [-e {.csv,.json,.txt,.cr} [{.csv,.json,.txt,.cr} ...]] [-r {True,False}]
+    usage: crypter.py [-h] -m  -p PASSWORD [-v] (--file FILE [FILE ...] | --folder FOLDER) [-e {.csv,.json,.txt,.cr} [{.csv,.json,.txt,.cr} ...]] [-r {True,False}]
 
       Encypting files application
 
       options:
         -h, --help            show this help message and exit
-        -m , --mode           Available modes: encrypt, decrypt, append; encrypt given file or files; decrypt encrypted file or files; append -> decrypt file, append text and encrypt the file again
+        -m , --mode           Available modes: encrypt, decrypt, append; encrypt given file or files; decrypt encrypted file or files; append -> decrypt file, append     text and encrypt the file again
         -p PASSWORD, --password PASSWORD
                               Password to encrypt or decrypt
         -v, --verbose         Verbose mode
