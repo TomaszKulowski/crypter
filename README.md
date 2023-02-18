@@ -18,7 +18,7 @@ Python 3.10
     pip install -r requirements.txt
     ```
 
-3. Usage
+### Usage
 
    ```bash
     usage: crypter.py [-h] -m  -p PASSWORD [-v] (--file FILE [FILE ...] | --folder FOLDER) [-e {.csv,.json,.txt,.cr} [{.csv,.json,.txt,.cr} ...]] [-r {True,False}]
