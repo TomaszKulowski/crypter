@@ -9,11 +9,7 @@ from tools.progress_bar import ProgressBar
 
 
 def test_file_path_setter():
-    """Check that the file path is set correctly when the passed file is exist.
-
-    Args:
-        mocker (pytest_mock): mock the called methods
-    """
+    """Check that the file path is set correctly when the passed file is exist."""
     file = File()
     file.file_path = 'file.txt'
 
@@ -44,7 +40,7 @@ def test_successfully_load_data_from_file(mocker):
     Args:
         mocker (pytest_mock): mock the called methods
     """
-    excepted_result = ' example excepted result '
+    expected_result = ' example expected result '
     mocker.patch.object(builtins, 'open', new=mocker.mock_open())
     builtins.open.return_value.tell.side_effect = [1, 2, 2]
     builtins.open.return_value.readline.return_value = b' example excepted result '
@@ -58,7 +54,7 @@ def test_successfully_load_data_from_file(mocker):
 
     builtins.open.assert_called_once_with('file.txt', 'rb')
     ProgressBar.__new__.assert_called_once_with(ProgressBar, 'load', 2)
-    assert result == excepted_result
+    assert result == expected_result
 
 
 def test_save_data_to_file(mocker):
