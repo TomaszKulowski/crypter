@@ -1,4 +1,4 @@
-"""Encypting files application"""
+"""Encrypting files application"""
 from argparse import ArgumentParser, ArgumentError
 import logging
 import os
@@ -57,7 +57,7 @@ class Main:
         file_group.add_argument(
             '--file',
             nargs='+',
-            help='The path to the name of the file with data to be processed',
+            help='The path to the name of the file/files with data to be processed',
         )
         file_group.add_argument(
             '--folder',
