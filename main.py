@@ -7,9 +7,9 @@ import sys
 from tools.crypter import Crypter
 
 # The .cr extension belongs to encrypted files
-ENCRYPTED_EXTENSION = {'.cr'}
-UNENCRYPTED_EXTENSIONS = {'.txt', '.json', '.csv'}
-FILE_TYPES = UNENCRYPTED_EXTENSIONS | ENCRYPTED_EXTENSION
+ENCRYPTED_EXTENSION = ['.cr']
+UNENCRYPTED_EXTENSIONS = ['.csv', '.json', '.txt']
+FILE_TYPES = UNENCRYPTED_EXTENSIONS + ENCRYPTED_EXTENSION
 
 
 class Main:
@@ -102,7 +102,12 @@ class Main:
             if len(self.args.file) != 2:
                 raise ArgumentError(None, 'append mode requires passing two files')
             extensions = {os.path.splitext(file)[1].lower() for file in self.args.file}
-            if all([extensions.issubset(ENCRYPTED_EXTENSION), extensions.issubset(UNENCRYPTED_EXTENSIONS)]):
+            if all(
+                    [
+                        extensions.issubset(set(ENCRYPTED_EXTENSION)),
+                        extensions.issubset(set(UNENCRYPTED_EXTENSIONS)),
+                    ]
+            ):
                 raise ArgumentError(None, 'append mode requires passing two files, encrypted and unencrypted')
 
         if self.args.file:
@@ -145,7 +150,6 @@ class Main:
         app._validate_arguments()
         app._set_verbose_mode()
         app._set_default_extensions()
-        print(app.args)
         app._start()
 
 
