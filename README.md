@@ -20,7 +20,7 @@ Python 3.10
 
 3. Usage
 
-  '''bash
+  ```bash
   usage: crypter.py [-h] -m  -p PASSWORD [-v] (--file FILE [FILE ...] | --folder FOLDER) [-e {.csv,.json,.txt,.cr} [{.csv,.json,.txt,.cr} ...]] [-r {True,False}]
 
   Encypting files application
@@ -38,5 +38,5 @@ Python 3.10
     -r {True,False}, --remove {True,False}
                           Remove parent file. Default is False
 
-  '''
+  ```
  
