@@ -43,7 +43,7 @@ def test_successfully_load_data_from_file(mocker):
     expected_result = ' example expected result '
     mocker.patch.object(builtins, 'open', new=mocker.mock_open())
     builtins.open.return_value.tell.side_effect = [1, 2, 2]
-    builtins.open.return_value.readline.return_value = b' example excepted result '
+    builtins.open.return_value.readline.return_value = b' example expected result '
     mocker.patch.object(path, 'getsize', return_value=2)
     mocker.patch.object(path, 'isfile', return_value=True)
     mocker.patch.object(ProgressBar, '__new__')
