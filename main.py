@@ -163,3 +163,6 @@ if __name__ == '__main__':
     except FileNotFoundError as error:
         print(f'error: {error}')
         sys.exit()
+
+    except ValueError as error:
+        print(f'error: {error}')
