@@ -11,7 +11,7 @@ def test_encrypt_data(mocker):
         mocker (pytest_mock): mock the called methods
     """
     expected_result = 'gAAAAABj0YLPHaoW=='
-    mocker.patch.object(Fernet, 'encrypt', return_value=bytes(excepted_result, 'utf-8'))
+    mocker.patch.object(Fernet, 'encrypt', return_value=bytes(expected_result, 'utf-8'))
     protection = Protection('pass word')
 
     result = protection.encrypt(' data to encrypt')
@@ -27,7 +27,7 @@ def test_decrypt_data(mocker):
         mocker (pytest_mock): mock the called methods
     """
     expected_result = 'decrypted data '
-    mocker.patch.object(Fernet, 'decrypt', return_value=bytes(excepted_result, 'utf-8'))
+    mocker.patch.object(Fernet, 'decrypt', return_value=bytes(expected_result, 'utf-8'))
     protection = Protection('Password!@#12 ')
 
     result = protection.decrypt('gAAAAABj0YLPHaoW==')
