@@ -24,10 +24,7 @@ class File:
 
     @file_path.setter
     def file_path(self, file_path: str):
-        if path.isfile(file_path):
-            self._file_path = file_path
-        else:
-            raise FileNotFoundError('File not found')
+        self._file_path = file_path
 
     @staticmethod
     def _strip_last_new_line_character(line: bytes) -> bytes:
@@ -41,6 +38,8 @@ class File:
     def load(self) -> str:
         """Open and return data from the file."""
         result = b''
+        if not path.isfile(self.file_path):
+            raise FileNotFoundError('File not found')
         file_size = path.getsize(self.file_path)
         progress_bar = ProgressBar('load', file_size)
         with open(self.file_path, 'rb') as file:
