@@ -8,36 +8,16 @@ from tools.file_management import File
 from tools.progress_bar import ProgressBar
 
 
-def test_file_path_setter_file_exist(mocker):
+def test_file_path_setter():
     """Check that the file path is set correctly when the passed file is exist.
 
     Args:
         mocker (pytest_mock): mock the called methods
     """
-    mocker.patch.object(path, 'isfile', return_value=True)
-
     file = File()
     file.file_path = 'file.txt'
 
     assert file.file_path == 'file.txt'
-
-
-def test_file_path_setter_file_not_exist(mocker):
-    """Check that the file path is not set as file_path,
-    and error is raised.
-
-    Args:
-        mocker (pytest_mock): mock the called methods
-    """
-    mocker.patch.object(path, 'isfile', return_value=False)
-
-    file = File()
-    with pytest.raises(FileNotFoundError, match='File not found') as error:
-        file.file_path = 'file.txt'
-
-    assert file.file_path != 'file.txt'
-    assert error.type == FileNotFoundError
-    assert str(error.value) == 'File not found'
 
 
 def test_strip_last_new_line_without_new_line_char_at_end():
@@ -58,7 +38,7 @@ def test_strip_last_new_line_with_new_line_at_end():
     assert result == data[:-1]
 
 
-def test_load_data_from_file(mocker):
+def test_successfully_load_data_from_file(mocker):
     """Check that the data has been loaded correctly.
 
     Args:
@@ -99,3 +79,22 @@ def test_save_data_to_file(mocker):
     builtins.open.assert_called_once_with('file.txt', 'w', encoding='utf-8')
     ProgressBar.__new__.assert_called_once_with(ProgressBar, 'save', len(data))
     assert builtins.open.return_value.__enter__.return_value.write.call_count == len(data)
+
+
+def test_load_data_file_not_exist(mocker):
+    """Check that the file path is not set as file_path,
+    and error is raised.
+
+    Args:
+        mocker (pytest_mock): mock the called methods
+    """
+    mocker.patch.object(path, 'isfile', return_value=False)
+
+    file = File()
+    file.file_path = 'file.txt'
+    with pytest.raises(FileNotFoundError, match='File not found') as error:
+        file.load()
+
+    path.isfile.assert_called_once_with('file.txt')
+    assert error.type == FileNotFoundError
+    assert str(error.value) == 'File not found'
