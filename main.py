@@ -7,7 +7,9 @@ import sys
 from tools.crypter import Crypter
 
 # The .cr extension belongs to encrypted files
-FILE_TYPES = ['.txt', '.cr', '.json', '.csv']
+ENCRYPTED_EXTENSION = {'.cr'}
+UNENCRYPTED_EXTENSIONS = {'.txt', '.json', '.csv'}
+FILE_TYPES = UNENCRYPTED_EXTENSIONS | ENCRYPTED_EXTENSION
 
 
 class Main:
@@ -54,6 +56,7 @@ class Main:
         file_group = self.parser.add_mutually_exclusive_group(required=True)
         file_group.add_argument(
             '--file',
+            nargs='+',
             help='The path to the name of the file with data to be processed',
         )
         file_group.add_argument(
@@ -90,17 +93,28 @@ class Main:
     def _validate_arguments(self):
         """Validate passed arguments."""
         if self.args.file and self.args.extension:
-            raise ArgumentError('argument --file not allowed with argument --extension')
+            raise ArgumentError(None, 'argument --file not allowed with argument --extension')
 
         if self.args.mode == 'decrypt' and None is not self.args.extension != ['.cr']:
-            raise ArgumentError('argument --mode decrypt not allowed with argument --extension')
+            raise ArgumentError(None, 'argument --mode decrypt not allowed with argument --extension')
+
+        if self.args.mode == 'append':
+            if len(self.args.file) != 2:
+                raise ArgumentError(None, 'append mode requires passing two files')
+            extensions = {os.path.splitext(file)[1].lower() for file in self.args.file}
+            if all([extensions.issubset(ENCRYPTED_EXTENSION), extensions.issubset(UNENCRYPTED_EXTENSIONS)]):
+                raise ArgumentError(None, 'append mode requires passing two files, encrypted and unencrypted')
+
+        if self.args.file:
+            for file in self.args.file:
+                if os.path.splitext(file)[1].lower() not in FILE_TYPES:
+                    raise ArgumentError(None, 'unsupported file type')
 
     def _set_verbose_mode(self):
         """Set verbose mode."""
         log_levels = [logging.NOTSET, logging.DEBUG, logging.INFO]
         level = log_levels[min(self.args.verbose, len(log_levels) - 1)]
         logging.basicConfig(level=level)
-        print(level)
 
     def _start(self):
         """The method with application logic."""
@@ -116,9 +130,12 @@ class Main:
                     if os.path.splitext(file)[1].lower() in self.args.extension:
                         crypter_mode(f'{directory[0]}/{file}')
 
-        if self.args.file:
-            if os.path.splitext(self.args.file)[1].lower() in self.args.extension:
-                crypter_mode(self.args.file)
+        if self.args.file and self.args.mode != 'append':
+            for file in self.args.file:
+                crypter_mode(file)
+
+        else:
+            crypter_mode(self.args.file)
 
     @classmethod
     def start(cls):
@@ -128,6 +145,7 @@ class Main:
         app._validate_arguments()
         app._set_verbose_mode()
         app._set_default_extensions()
+        print(app.args)
         app._start()
 
 
