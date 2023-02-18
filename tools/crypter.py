@@ -57,28 +57,30 @@ class Crypter:
         file.file_path = file.file_path[:-len(file_extension)]
         file.save(decrypted_data)
 
-    def append(self, path_to_encrypted_file: str, path_to_unencrypted_file: str):
+    def append(self, files: list):
         """Decrypt the passed encrypted file,
         append the data from the passed unencrypted file,
         and encrypt the file again.
 
         Args:
-            path_to_encrypted_file (str): path to the encrypted file
-            path_to_unencrypted_file (str): path with unencrypted data
+            files(list): with encrypted and unencrypted file path
         """
         protection = Protection(self.password)
         file = File()
 
         # load data from the unencrypted file
-        file.file_path = path_to_unencrypted_file
+        file.file_path = list(file for file in files if not file.endswith('.cr'))[0]
         unencrypted_data = file.load()
 
+        if self.remove_parent_file:
+            os.remove(file.file_path)
+
         # load data from the encrypted file
-        file.file_path = path_to_encrypted_file
+        file.file_path = list(file for file in files if file.endswith('.cr'))[0]
         encrypted_data = file.load()
 
+        # decrypt the data and append it to the unencrypted data,
+        # protect it, and save it to the file
         decrypted_data = protection.decrypt(encrypted_data)
         encrypted_result = protection.encrypt(decrypted_data + unencrypted_data)
-        if self.remove_parent_file:
-            os.remove(path_to_unencrypted_file)
         file.save(encrypted_result)
