@@ -1,7 +1,10 @@
 """Encrypting files application"""
-from argparse import ArgumentParser, ArgumentError
+import argparse
+from argparse import ArgumentParser, ArgumentError, Namespace
+import getpass
 import os
 import sys
+from typing import Any
 
 from cryptography.fernet import InvalidToken
 
@@ -11,6 +14,14 @@ from tools.crypter_tool import Crypter
 ENCRYPTED_EXTENSION = ['.cr']
 UNENCRYPTED_EXTENSIONS = ['.csv', '.json', '.txt']
 FILE_TYPES = UNENCRYPTED_EXTENSIONS + ENCRYPTED_EXTENSION
+
+
+class Password(argparse.Action):
+    def __call__(self, parser: ArgumentParser, namespace: Namespace, values: Any, option_string: str):
+        if values is None:
+            values = getpass.getpass()
+
+        setattr(namespace, self.dest, values)
 
 
 class Main:
@@ -44,6 +55,8 @@ class Main:
             '-p',
             '--password',
             metavar='PASSWORD',
+            nargs='?',
+            action=Password,
             required=True,
             help='Password to encrypt or decrypt',
         )
