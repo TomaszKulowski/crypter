@@ -115,16 +115,11 @@ class Main:
                 if os.path.splitext(file)[1].lower() not in FILE_TYPES:
                     raise ArgumentError(None, 'unsupported file type')
 
-    def _set_verbose_mode(self):
-        """Set verbose mode."""
-        log_levels = [logging.NOTSET, logging.DEBUG, logging.INFO]
-        level = log_levels[min(self.args.verbose, len(log_levels) - 1)]
-        logging.basicConfig(level=level)
-
     def _start(self):
         """The method with application logic."""
         crypter = Crypter(
             self.args.password,
+            self.args.verbose,
             self.args.remove,
         )
         crypter_mode = getattr(crypter, self.args.mode)
@@ -148,7 +143,6 @@ class Main:
         app = cls()
         app._load_arguments(sys.argv[1:])
         app._validate_arguments()
-        app._set_verbose_mode()
         app._set_default_extensions()
         app._start()
 
@@ -166,3 +160,7 @@ if __name__ == '__main__':
 
     except ValueError as error:
         print(f'error: {error}')
+
+
+# todo add except for invalid token, password can't be visible, file path must uses pathlib, verbose mode,
+#  set description in tqdm to show current processed file
