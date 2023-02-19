@@ -14,7 +14,7 @@ class Crypter:
         decrypt(file_path: str): decrypt data from the passed file
         append(path_to_encrypted_file, path_to_unencrypted_file): append new data to encrypted file
     """
-    def __init__(self, password: str, remove_parent_file: bool = False):
+    def __init__(self, password: str, verbose: int, remove_parent_file: bool = False):
         """Construct all the necessary attributes for the crypter object.
 
         Args:
@@ -23,6 +23,7 @@ class Crypter:
         """
         self.password = password
         self.remove_parent_file = remove_parent_file
+        self.verbose = verbose
 
     def encrypt(self, file_path: str):
         """Encrypt the data in the passed file.
@@ -30,7 +31,7 @@ class Crypter:
         Args:
             file_path (str): path to the file
         """
-        file = File()
+        file = File(self.verbose)
         file.file_path = file_path
         data = file.load()
         encrypted_data = Protection(self.password).encrypt(data)
@@ -46,7 +47,7 @@ class Crypter:
         Args:
             file_path (str): path to the file
         """
-        file = File()
+        file = File(self.verbose)
         file.file_path = file_path
         data = file.load()
         decrypted_data = Protection(self.password).decrypt(data)
@@ -66,7 +67,7 @@ class Crypter:
             files(list): with encrypted and unencrypted file path
         """
         protection = Protection(self.password)
-        file = File()
+        file = File(self.verbose)
 
         # load data from the unencrypted file
         file.file_path = list(file for file in files if not file.endswith('.cr'))[0]

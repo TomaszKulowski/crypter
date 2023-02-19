@@ -48,7 +48,7 @@ def test_successfully_load_data_from_file(mocker):
     mocker.patch.object(path, 'isfile', return_value=True)
     mocker.patch.object(tqdm, '__new__')
 
-    file_object = File()
+    file_object = File(verbose=1)
     file_object.file_path = 'file.txt'
     result = file_object.load()
 
@@ -68,7 +68,7 @@ def test_save_data_to_file(mocker):
     mocker.patch.object(path, 'isfile', return_value=True)
     mocker.patch.object(tqdm, '__new__')
 
-    file_object = File()
+    file_object = File(verbose=1)
     file_object.file_path = 'file.txt'
     file_object.save(data)
 

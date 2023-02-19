@@ -12,7 +12,7 @@ def test_encrypt_file(mocker):
     example_file_path = 'example_folder/file.txt'
     fake_encrypted_data = 'gAABj0YLPHaoW=='
     example_read_data = ' data1@./? '
-    crypter = Crypter('password')
+    crypter = Crypter('password', verbose=1)
 
     mocker.patch.object(Protection, 'encrypt', return_value=fake_encrypted_data)
     mocker.patch.object(File, 'load', return_value=example_read_data)
@@ -32,7 +32,7 @@ def test_decrypt_file(mocker):
 def test_file_extension_after_encrypt(mocker):
     """Check that the extension file is changed to '.cr' after encrypt"""
     example_file_path = 'example_folder/file.txt'
-    crypter = Crypter('password')
+    crypter = Crypter('password', verbose=1)
 
     mocker.patch.object(builtins, 'open', new=mocker.mock_open())
     mocker.patch.object(Protection, 'encrypt')
@@ -52,7 +52,7 @@ def test_file_extension_after_encrypt(mocker):
 def test_file_extension_after_decrypt(mocker):
     """Check that the '.cr' extension is removed after decrypt"""
     example_file_path = 'example_folder/file.txt.cr'
-    crypter = Crypter('password')
+    crypter = Crypter('password', verbose=1)
 
     mocker.patch.object(builtins, 'open', new=mocker.mock_open())
     mocker.patch.object(Protection, 'decrypt')
@@ -74,7 +74,7 @@ def test_append_new_data_to_encrypted_file(mocker):
     append new data, encrypt again and save to the encrypted file"""
     example_encrypted_file = 'encrypted.txt.cr'
     example_unencrypted_file = 'unencrypted.txt'
-    crypter = Crypter('pAss12@;!')
+    crypter = Crypter('pAss12@;!', verbose=1)
 
     mocker.patch.object(Protection, 'encrypt', return_value='abced==')
     mocker.patch.object(Protection, 'decrypt', return_value='decrypted data')
@@ -96,7 +96,7 @@ def test_parent_file_has_been_removed_after_encrypt(mocker):
     """Check that the parent file is removed after encrypting
     when the remove option is chosen"""
     example_file_path = 'example_folder/file.txt'
-    crypter = Crypter('password', remove_parent_file=True)
+    crypter = Crypter('password',verbose=1, remove_parent_file=True)
 
     mocker.patch.object(Protection, 'encrypt')
     mocker.patch.object(File, 'load')
@@ -115,7 +115,7 @@ def test_parent_file_has_been_removed_after_decrypt(mocker):
     """Check that the parent file is removed after decrypting
     when the remove option is chosen"""
     example_file_path = 'example_folder/file.txt.cr'
-    crypter = Crypter('password', remove_parent_file=True)
+    crypter = Crypter('password',verbose=1, remove_parent_file=True)
 
     mocker.patch.object(Protection, 'decrypt')
     mocker.patch.object(File, 'load')
@@ -135,7 +135,7 @@ def test_parent_file_has_been_removed_after_append(mocker):
     when the remove option is chosen"""
     example_encrypted_file = 'encrypted.txt.cr'
     example_unencrypted_file = 'unencrypted.txt'
-    crypter = Crypter('password', remove_parent_file=True)
+    crypter = Crypter('password',verbose=1, remove_parent_file=True)
 
     mocker.patch.object(Protection, 'decrypt')
     mocker.patch.object(Protection, 'encrypt')
@@ -156,7 +156,7 @@ def test_parent_file_has_not_been_removed_after_encrypt(mocker):
     """Check that the parent file isn't removed after encrypting
     when the remove option is chosen as False"""
     example_file_path = 'example_folder/file.txt'
-    crypter = Crypter('password', remove_parent_file=False)
+    crypter = Crypter('password',verbose=1, remove_parent_file=False)
 
     mocker.patch.object(Protection, 'encrypt')
     mocker.patch.object(File, 'load')
@@ -175,7 +175,7 @@ def test_parent_file_has_not_been_removed_after_decrypt(mocker):
     """Check that the parent file isn't removed after decrypting
     when the remove option is chosen as False"""
     example_file_path = 'example_folder/file.txt'
-    crypter = Crypter('password', remove_parent_file=False)
+    crypter = Crypter('password',verbose=1, remove_parent_file=False)
 
     mocker.patch.object(Protection, 'decrypt')
     mocker.patch.object(File, 'load')
@@ -195,7 +195,7 @@ def test_parent_file_has_not_been_removed_after_append(mocker):
     when the remove option is chosen as False"""
     example_encrypted_file = 'encrypted.txt.cr'
     example_unencrypted_file = 'unencrypted.txt'
-    crypter = Crypter('password', remove_parent_file=False)
+    crypter = Crypter('password',verbose=1, remove_parent_file=False)
 
     mocker.patch.object(Protection, 'encrypt')
     mocker.patch.object(Protection, 'decrypt')

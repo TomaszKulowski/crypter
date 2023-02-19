@@ -13,9 +13,10 @@ class File:
         load(): return data from file
         save(data: str): save passed data to file
     """
-    def __init__(self):
+    def __init__(self, verbose: int = 0):
         """Construct all the necessary attributes for the file object"""
         self._file_path = None
+        self.verbose = verbose
 
     @property
     def file_path(self) -> str:
@@ -40,19 +41,26 @@ class File:
         result = b''
         if not path.isfile(self.file_path):
             raise FileNotFoundError('File not found')
+
         file_size = path.getsize(self.file_path)
-        progress_bar = ProgressBar('load', file_size)
+        if self.verbose > 0:
+            progress_bar = ProgressBar('load', file_size)
+
         with open(self.file_path, 'rb') as file:
             while file.tell() != file_size:
                 data = self._strip_last_new_line_character(file.readline())
                 result += data
-                progress_bar.progress = file.tell()
+                if self.verbose > 0:
+                    progress_bar.progress = file.tell()
             return result.decode('utf-8')
 
     def save(self, data: str):
         """Open and save passed data to the file."""
-        progress_bar = ProgressBar('save', len(data))
+        if self.verbose > 0:
+            progress_bar = ProgressBar('save', len(data))
+
         with open(self.file_path, 'w', encoding='utf-8') as file:
             for index, byte in enumerate(data, 1):
-                progress_bar.progress = index
+                if self.verbose > 0:
+                    progress_bar.progress = index
                 file.write(byte)
