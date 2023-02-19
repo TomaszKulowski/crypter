@@ -17,6 +17,7 @@ FILE_TYPES = UNENCRYPTED_EXTENSIONS + ENCRYPTED_EXTENSION
 
 
 class Password(argparse.Action):
+    """Set entered password as value of password argument"""
     def __call__(self, parser: ArgumentParser, namespace: Namespace, values: Any, option_string: str):
         if values is None:
             values = getpass.getpass()
