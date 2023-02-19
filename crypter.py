@@ -1,8 +1,9 @@
 """Encrypting files application"""
 from argparse import ArgumentParser, ArgumentError
-import logging
 import os
 import sys
+
+from cryptography.fernet import InvalidToken
 
 from tools.crypter_tool import Crypter
 
@@ -161,6 +162,5 @@ if __name__ == '__main__':
     except ValueError as error:
         print(f'error: {error}')
 
-
-# todo add except for invalid token, password can't be visible, file path must uses pathlib, verbose mode,
-#  set description in tqdm to show current processed file
+    except InvalidToken as error:
+        print(error)
