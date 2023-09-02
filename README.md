@@ -11,7 +11,7 @@ Python 3.10
 1. Clone repo
 
     ```bash
-    git clone https://github.com/Tomasz987/crypter.git
+    git clone https://github.com/TomaszKulowski/crypter.git
     ```
     
 2. Install requirements packages
